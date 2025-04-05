@@ -1,4 +1,4 @@
-const slackClient = require('../config/slackConfig');
+const slackClient = require('../util/slack-config');
 
 exports.openApprovalModal = async (req, res) => {
     try {
@@ -38,6 +38,44 @@ exports.openApprovalModal = async (req, res) => {
         res.send('');
     } catch (error) {
         console.error("Error opening modal:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+exports.handleModalSubmission = async (req, res) => {
+    try {
+        //Parse the payload from the Slack modal submission
+        const payload = JSON.parse(req.body.payload);
+
+        //Check if the interaction is a modal submission
+        if (payload.type === 'view_submission') {
+
+            //Extract the selected approver(user ID), approval text entered by the requester, and ID of the user who submitted the form
+            const approver = payload.view.state.values.approver_block.approver_select.selected_user;
+            const approvalText = payload.view.state.values.approval_text.approval_input.value;
+            const requester = payload.user.id;
+
+            //Send an approval request message(chat) to the approver
+            await slackClient.chat.postMessage({
+                channel: approver,
+                text: `*New Approval Request from <@${requester}>*:\n${approvalText}`,
+                attachments: [
+                    {
+                        text: "Approve or Reject?",
+                        fallback: "You can't respond here",
+                        callback_id: "approval_action",
+                        actions: [
+                            { name: "approve", text: "Approve ✅", type: "button", value: requester },
+                            { name: "reject", text: "Reject ❌", type: "button", value: requester }
+                        ]
+                    }
+                ]
+            });
+
+            res.send('');
+        }
+    } catch (error) {
+        console.error("Error handling modal submission:", error);
         res.status(500).send("Internal Server Error");
     }
 };

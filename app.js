@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const slackRoutes = require('./routes/slackRoutes');
+const slackRoutes = require('./routes/slack-routes');
 
 require('dotenv').config();
 
