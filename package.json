@@ -1,0 +1,19 @@
+{
+  "name": "slack-approval-bot",
+  "version": "1.0.0",
+  "description": "A Slack app that lets users request approvals through a slash command. Approvers can approve or reject directly from Slack via buttons.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@slack/web-api": "^7.9.1",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.9"
+  }
+}
