@@ -65,8 +65,8 @@ exports.handleModalSubmission = async (req, res) => {
                         fallback: "You can't respond here",
                         callback_id: "approval_action",
                         actions: [
-                            { name: "approve", text: "Approve ✅", type: "button", value: requester },
-                            { name: "reject", text: "Reject ❌", type: "button", value: requester }
+                            { name: "approve", text: "Approve", type: "button", value: requester },
+                            { name: "reject", text: "Reject", type: "button", value: requester }
                         ]
                     }
                 ]
@@ -76,6 +76,31 @@ exports.handleModalSubmission = async (req, res) => {
         }
     } catch (error) {
         console.error("Error handling modal submission:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+exports.handleApprovalActions = async (req, res) => {
+    try {
+        //Parse the payload sent by Slack from the interaction
+        const payload = JSON.parse(req.body.payload);
+
+        //Extract the action (approve or reject) and the requester ID from the button value
+        const action = payload.actions[0].name;
+        const requester = payload.actions[0].value;
+
+        //Set the message based on whether it was approved or rejected
+        let message = (action === "approve") ? "Approved!" : "Rejected!";
+        
+        //Send a direct message back to the requester informing them of the decision
+        await slackClient.chat.postMessage({
+            channel: requester,
+            text: `Your approval request has been *${message}* by <@${payload.user.id}>`
+        });
+
+        res.send('');
+    } catch (error) {
+        console.error("Error handling approval actions:", error);
         res.status(500).send("Internal Server Error");
     }
 };
