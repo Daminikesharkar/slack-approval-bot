@@ -151,4 +151,4 @@ Go to **OAuth & Permissions** > **Scopes** and add the following:
 
 ## Architecture Diagram
 
-![Architecture Diagram](https://app.eraser.io/workspace/wgLHz8RLFa4hT9vrXIKd)
+[Click here to view the Architecture Diagram](https://app.eraser.io/workspace/wgLHz8RLFa4hT9vrXIKd)
